@@ -1,0 +1,16 @@
+services:
+  nvda-predictor:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./models:/app/models   # persist trained models on host — survive container restarts
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
